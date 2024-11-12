@@ -1,0 +1,146 @@
+=====================================================
+# KPI 1 Number of Invoices By Account Executive
+
+SELECT `Account Executive`,
+count(invoice_number) AS Num_Invoice
+FROM invoice
+GROUP BY 1
+ORDER BY Num_Invoice DESC; 
+======================================================
+# 2-Yearly Meeting Count
+
+select * from meeting;
+
+select count(`Account Exe ID`),
+year(meeting_date) as Years
+from meeting
+group by 1;
+
+=======================================================
+
+SELECT 
+    YEAR(meeting_date) AS Years,
+    COUNT(`Account Exe ID`) AS 
+    no_of_meeting
+FROM 
+    meeting
+GROUP BY 
+    Years
+ORDER BY 
+    Years;
+
+ =========================================================
+   
+# Stage Funnel by Revenue
+
+select * from opportunity;
+
+SELECT stage,
+sum(revenue_amount) AS 
+Revenue_by_stage
+FROM opportunity
+GROUP BY 1
+ORDER BY Revenue_by_stage ASC ;
+
+=========================================================
+
+# 5. No of meeting By Account Exe
+
+Select * from Meeting;
+
+SELECT `Account Executive` 
+AS Executive_Names,
+count(meeting_date) AS Num_Meeting
+FROM meeting
+GROUP BY `Account Executive`
+ORDER BY Num_Meeting ASC;
+
+=========================================================
+
+# 6-Top Open Opportunity
+
+Select * from opportunity;
+
+# Total Opportunities
+
+Select count(opportunity_id) 
+As Total_Opportunities
+from opportunity;
+
+=========================================================
+
+# Top 4 Opportunties by name
+
+SELECT opportunity_name,
+sum(revenue_amount) AS Revenue
+FROM opportunity
+GROUP BY 1
+ORDER BY Revenue DESC
+LIMIT 4;
+
+==========================================================
+
+# Open Opportunity
+
+SELECT count(*) 
+AS Open_oppotunity
+FROM opportunity
+WHERE 
+stage 
+IN ('Qualify Opportunity', 'Propose Solution');
+
+===========================================================
+
+# Negotiable opportunities
+
+SELECT count(*) 
+AS Negotiable_opportunites
+FROM opportunity
+WHERE stage = "Negotiate";
+
+#==========================KPI 3 ===================================#
+
+SELECT 
+    a.income_class,
+    ROUND(SUM(a.Bro_amount), 2) 
+    + ROUND(SUM(b.fees_amount), 2) 
+    AS Achievement_sales
+FROM  
+(
+    SELECT 
+        income_class,
+        ROUND(SUM(amount), 2) AS Bro_amount
+    FROM 
+        brokerage
+    WHERE 
+        income_class IN ('cross sell', 'new', 'renewal')
+    GROUP BY 
+        income_class
+) a
+INNER JOIN 
+(
+    SELECT 
+        income_class,
+        ROUND(SUM(amount), 2) AS fees_amount
+    FROM 
+        fees
+    WHERE 
+        income_class IN ('cross sell', 'new', 'renewal')
+    GROUP BY 
+        income_class
+) b ON a.income_class = b.income_class
+GROUP BY a.income_class
+order by Achievement_sales;
+
+==================================================================
+select income_class,
+concat(round(sum((Amount)/1000000),2),"M") 
+as Invoice_placed_sales
+from invoice
+where income_class 
+in ('cross sell','new','renewal')
+group by income_class;
+==================================================================
+
+
+
